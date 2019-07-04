@@ -10,24 +10,32 @@ import UIKit
 
 class ToDoListViewController: UITableViewController {
 
-    var itemArray = ["Find", "Buy", "Destroy"]
+    var itemArray = [Item]()
     
     var defaults = UserDefaults.standard
-    
-   //var defaultcheckmarkmemory = UserDefaults.standard
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        if let items = defaults.array(forKey: "ToDoListArray") as? [String] {
+        let newItem = Item()
+        newItem.title = "1"
+        itemArray.append(newItem)
+        
+        let newItem2 = Item()
+        newItem2.title = "2"
+        itemArray.append(newItem2)
+        
+        let newItem3 = Item()
+        newItem3.title = "3"
+        itemArray.append(newItem3)
+        
+        
+        if let items = defaults.array(forKey: "ToDoListArray") as? [Item] {
             itemArray = items
         }
         
-    //    if let check = defaultcheckmarkmemory.value(forKey: "CheckmarkOrNot") {
-     //       tableView.cellForRow(at: IndexPath)?.accessoryType = check
-       // }
     }
     
 //MARK - Tableview Datasource Methods
@@ -42,8 +50,12 @@ class ToDoListViewController: UITableViewController {
         // Fetch a cell of the appropriate type.
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         
+        let item = itemArray[indexPath.row]
+        
         // Configure the cell’s contents.
-        cell.textLabel!.text = itemArray[indexPath.row]
+        cell.textLabel!.text = item.title
+        
+        cell.accessoryType = item.done == true ? .checkmark : .none
         
         return cell
     }
@@ -54,16 +66,12 @@ class ToDoListViewController: UITableViewController {
    
         // creates a checkmark when pressed
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
-        
-        //defaultcheckmarkmemory.set(tableView.cellForRow(at: indexPath)?.accessoryType , forKey: "CheckmarkOrNot")
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
         // animates the button pressed
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        tableView.reloadData()
     }
 
 //MARK - Add new Items
@@ -75,7 +83,10 @@ class ToDoListViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (alertAction) in
             //What happens when the user presses "add item" on UI Alert
-            self.itemArray.append(textfielditem.text!)
+            let newItem4 = Item()
+            newItem4.title = textfielditem.text!
+            self.itemArray.append(newItem4)
+            
             self.defaults.set(self.itemArray, forKey: "ToDoListArray")
             self.tableView.reloadData()
         }
