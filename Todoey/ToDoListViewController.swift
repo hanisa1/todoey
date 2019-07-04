@@ -12,9 +12,22 @@ class ToDoListViewController: UITableViewController {
 
     var itemArray = ["Find", "Buy", "Destroy"]
     
+    var defaults = UserDefaults.standard
+    
+   //var defaultcheckmarkmemory = UserDefaults.standard
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        if let items = defaults.array(forKey: "ToDoListArray") as? [String] {
+            itemArray = items
+        }
+        
+    //    if let check = defaultcheckmarkmemory.value(forKey: "CheckmarkOrNot") {
+     //       tableView.cellForRow(at: IndexPath)?.accessoryType = check
+       // }
     }
     
 //MARK - Tableview Datasource Methods
@@ -47,6 +60,7 @@ class ToDoListViewController: UITableViewController {
             tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
         }
         
+        //defaultcheckmarkmemory.set(tableView.cellForRow(at: indexPath)?.accessoryType , forKey: "CheckmarkOrNot")
         
         // animates the button pressed
         tableView.deselectRow(at: indexPath, animated: true)
@@ -62,6 +76,7 @@ class ToDoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (alertAction) in
             //What happens when the user presses "add item" on UI Alert
             self.itemArray.append(textfielditem.text!)
+            self.defaults.set(self.itemArray, forKey: "ToDoListArray")
             self.tableView.reloadData()
         }
         
@@ -75,6 +90,8 @@ class ToDoListViewController: UITableViewController {
         
     }
     
-//MARK - Place New itms
+
+    
+    
 }
 
